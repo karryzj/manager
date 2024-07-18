@@ -1,0 +1,81 @@
+{
+    "pdk": [
+        {
+            "dataType": 0,
+            "gdsNumber": 31,
+            "layerName": "M1",
+            "style": {
+                "borderColor": "0x00ff00",
+                "borderLine": 1,
+                "fillColor": "0x000000",
+                "fillLine": 0
+            }
+        },
+        {
+            "dataType": 0,
+            "gdsNumber": 32,
+            "layerName": "M2",
+            "style": {
+                "borderColor": "0x00ff00",
+                "borderLine": 1,
+                "fillColor": "0x000000",
+                "fillLine": 0
+            }
+        },
+        {
+            "dataType": 0,
+            "gdsNumber": 33,
+            "layerName": "M3",
+            "style": {
+                "borderColor": "0xff557f",
+                "borderLine": 1,
+                "fillColor": "0xaa55ff",
+                "fillLine": 3
+            }
+        },
+        {
+            "dataType": 0,
+            "gdsNumber": 34,
+            "layerName": "M4",
+            "style": {
+                "borderColor": "0x00ff00",
+                "borderLine": 1,
+                "fillColor": "0x000000",
+                "fillLine": 0
+            }
+        },
+        {
+            "dataType": 0,
+            "gdsNumber": 35,
+            "layerName": "M56",
+            "style": {
+                "borderColor": "0x00ff00",
+                "borderLine": 1,
+                "fillColor": "0x0000ff",
+                "fillLine": 1
+            }
+        },
+        {
+            "dataType": 1,
+            "gdsNumber": 15,
+            "layerName": "M150",
+            "style": {
+                "borderColor": "0x0055ff",
+                "borderLine": 3,
+                "fillColor": "0xaa00ff",
+                "fillLine": 6
+            }
+        },
+        {
+            "dataType": 1,
+            "gdsNumber": 11,
+            "layerName": "Metal106",
+            "style": {
+                "borderColor": "0xffff00",
+                "borderLine": 1,
+                "fillColor": "0xff557f",
+                "fillLine": 4
+            }
+        }
+    ]
+}
