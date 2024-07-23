@@ -3,18 +3,18 @@
 
 #include <QWidget>
 
-class GridWidget : public QWidget
+class GridWidget final : public QWidget
 {
     Q_OBJECT
 public:
     explicit GridWidget(int type, QWidget *parent = nullptr);
+    ~GridWidget(void) override;
 
 protected:
-    virtual void paintEvent(QPaintEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 
 private:
     int m_type;
-
 };
 
 #endif // GRIDWIDGET_H

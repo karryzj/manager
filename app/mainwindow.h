@@ -8,28 +8,27 @@
 #include <QLabel>
 #include <QTimer>
 #include "graphicsview.h"
+#include "rightdockwidget.h"
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui
+{
+class MainWindow;
+}
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
+class MainWindow final: public QMainWindow
 {
     Q_OBJECT
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    ~MainWindow(void) override;
 
-protected:
-    bool eventFilter(QObject *obj, QEvent *event) override;
+// protected:
+//     bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
-    Ui::MainWindow *ui;
-    GraphicsView *mp_graphics_view;
-    QLabel *mp_mouse_pos_label;
-    QDockWidget *mp_dockwidget_right;
-    QTimer *mp_auto_hide_timer;
     void OpenFile();
     void PdkManage();
     void ShowPopupWindow();
@@ -39,5 +38,12 @@ private:
 
 private slots:
     void UpdateMousePosition(const QPointF &scenePos);
+
+private:
+    Ui::MainWindow *mp_ui;
+    GraphicsView *mp_graphics_view;
+    QLabel *mp_mouse_pos_label;
+    RightDockWidget *mp_dockwidget_right;
+    // QTimer *mp_auto_hide_timer;
 };
 #endif // MAINWINDOW_H

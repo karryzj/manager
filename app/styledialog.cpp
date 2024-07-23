@@ -11,16 +11,21 @@
 StyleDialog::StyleDialog(QWidget *parent, Qt::WindowFlags f) : QDialog(parent)
 {
     setWindowTitle("Style");
-    SetupUi();
+    setupUi();
 }
 
 StyleDialog::StyleDialog(const BorderStyle &style, QWidget *parent, Qt::WindowFlags f):QDialog(parent), m_border_style(style)
 {
     setWindowTitle("Style");
-    SetupUi(style);
+    setupUi(style);
 }
 
-void StyleDialog::SetupUi()
+StyleDialog::~StyleDialog()
+{
+
+}
+
+void StyleDialog::setupUi()
 {
     QLabel *label1 = new QLabel("外框样式：");
     QComboBox *board_style_combobox = new QComboBox();
@@ -110,7 +115,7 @@ void StyleDialog::SetupUi()
     layout->addWidget(buttonBox);
 }
 
-void StyleDialog::SetupUi(const BorderStyle &style)
+void StyleDialog::setupUi(const BorderStyle &style)
 {
     QLabel *label1 = new QLabel("外框样式：");
     QComboBox *board_style_combobox = new QComboBox();
@@ -214,12 +219,12 @@ void StyleDialog::SetupUi(const BorderStyle &style)
 }
 
 
-BorderStyle StyleDialog::GetData()
+BorderStyle StyleDialog::getData()
 {
     return m_border_style;
 }
 
-void StyleDialog::SetData(const BorderStyle &style)
+void StyleDialog::setData(const BorderStyle &style)
 {
     if (m_border_style != style)
     {

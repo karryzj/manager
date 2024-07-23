@@ -12,16 +12,16 @@
 #include <algorithm>
 #include <QGroupBox>
 #include "pdk_manage_dialog.h"
-// #include "gdsdialog.h"
+#include "listitemwidget.h"
 
 PdkManageDialog::PdkManageDialog(QWidget *parent)
     : QDialog(parent)
 {
     setWindowTitle("图层管理");
-    int ret = ParseCfgFile("D:\\Work\\pdk_manager\\pdk.json");
+    int ret = parseCfgFile("D:\\Work\\pdk_manager\\pdk.json");
     Q_ASSERT(ret == 0);
 
-    SetupUi();
+    setupUi();
 }
 
 void PdkManageDialog::onListItemClicked(const QModelIndex &index)
@@ -35,11 +35,11 @@ void PdkManageDialog::onListItemClicked(const QModelIndex &index)
     });
     if (it != m_pdk_info_list.end())
     {
-        mp_layername_lineedit->setText(selected_item);
+        mp_layername_line_edit->setText(selected_item);
 
-        mp_gdsnumber_lineedit->setText(QString::number(it->gds_number));
-        mp_datatype_lineedit->setText(QString::number(it->data_type));
-        mp_style_frame->SetStyle(it->style);
+        mp_gdsnumber_line_edit->setText(QString::number(it->gds_number));
+        mp_datatype_line_edit->setText(QString::number(it->data_type));
+        mp_style_frame->setStyle(it->style);
         mp_style_frame->update();
         // mp_style_frame->setFrameShape(QFrame::Box);
         // mp_style_frame->setFrameShadow(QFrame::Raised);
@@ -62,7 +62,7 @@ void PdkManageDialog::onAddPushButtonClicked()
     mp_pdk_list_model->insertRows(row, 1);
     QString text = QString("%1%2").arg("Metal").arg(row+100);
     mp_pdk_list_model->setData(mp_pdk_list_model->index(row), text);
-    mp_layername_lineedit->setText(text);
+    mp_layername_line_edit->setText(text);
     PdkInfo pdk_info;
     pdk_info.layer_name = text;
     pdk_info.gds_number = 0;
@@ -95,7 +95,7 @@ void PdkManageDialog::onDelPushButtonClicked()
 
 void PdkManageDialog::onSaveStyleInfo()
 {
-    WriteCfgFile("D:\\Work\\pdk_manager\\pdk.json");
+    writeCfgFile("D:\\Work\\pdk_manager\\pdk.json");
 }
 
 void PdkManageDialog::onStyleFrameChanged(const BorderStyle &style)
@@ -118,7 +118,7 @@ void PdkManageDialog::onStyleFrameChanged(const BorderStyle &style)
 
 void PdkManageDialog::onLayerNameFinished()
 {
-    QString text = mp_layername_lineedit->text();
+    QString text = mp_layername_line_edit->text();
     if (m_custom_index.isValid())
     {
         auto var = mp_pdk_list_model->data(m_custom_index);
@@ -152,7 +152,7 @@ void PdkManageDialog::onGdsNumberNameFinished()
         });
         if (it != m_pdk_info_list.end())
         {
-            QString text = mp_gdsnumber_lineedit->text();
+            QString text = mp_gdsnumber_line_edit->text();
             it->gds_number = text.toInt();
         }
     }
@@ -171,7 +171,7 @@ void PdkManageDialog::onDataTypeFinished()
         });
         if (it != m_pdk_info_list.end())
         {
-            QString text = mp_datatype_lineedit->text();
+            QString text = mp_datatype_line_edit->text();
             it->data_type = text.toInt();
         }
     }
@@ -187,7 +187,7 @@ void PdkManageDialog::onDataTypeFinished()
 //     // qDebug() << "Edit trigger set to:" << m_listView->editTriggers();
 // }
 
-int PdkManageDialog::ParseCfgFile(const QString &filename)
+int PdkManageDialog::parseCfgFile(const QString &filename)
 {
     QFile file(filename);
 
@@ -244,7 +244,7 @@ int PdkManageDialog::ParseCfgFile(const QString &filename)
     return 0;
 }
 
-int PdkManageDialog::WriteCfgFile(const QString &filename)
+int PdkManageDialog::writeCfgFile(const QString &filename)
 {
     QJsonObject root_object;
     QJsonArray pdk_info_array;
@@ -281,7 +281,7 @@ int PdkManageDialog::WriteCfgFile(const QString &filename)
     return 0;
 }
 
-void PdkManageDialog::SetupUi()
+void PdkManageDialog::setupUi()
 {
     QStringList model_data;
     for (const auto &val : m_pdk_info_list)
@@ -291,9 +291,26 @@ void PdkManageDialog::SetupUi()
     mp_list_view = new QListView(this);
     // m_contentTextEdit = new QTextEdit(this);
     mp_pdk_list_model = new PdkListModel(this);
-    mp_pdk_list_model->SetData(model_data);
+    mp_pdk_list_model->setData(model_data);
     // 添加左侧列表项
     mp_list_view->setModel(mp_pdk_list_model);
+
+    // Set custom frames for each item
+    for (int row = 0; row < mp_pdk_list_model->rowCount(); ++row)
+    {
+        QModelIndex index = mp_pdk_list_model->index(row);
+        QString text = mp_pdk_list_model->data(index, Qt::DisplayRole).toString();
+        BorderStyle style;
+        auto it = std::find_if(m_pdk_info_list.begin(), m_pdk_info_list.end(), [&](const auto &pdk_info)
+        {
+            return pdk_info.layer_name == text;
+        });
+        if (it != m_pdk_info_list.end())
+        {
+            ListItemWidget *itemWidget = new ListItemWidget(it->style, text);
+            mp_list_view->setIndexWidget(index, itemWidget);
+        }
+    }
 
     QHBoxLayout *leftBottomLayout = new QHBoxLayout();
     QPushButton *addPushButton = new QPushButton("添加");
@@ -316,20 +333,20 @@ void PdkManageDialog::SetupUi()
     QLabel *label2 = new QLabel("GDS Number:");
     QLabel *label3 = new QLabel("Data Type:");
     QLabel *label4 = new QLabel("Style:");
-    mp_layername_lineedit = new QLineEdit();
-    mp_gdsnumber_lineedit = new QLineEdit();
-    mp_datatype_lineedit = new QLineEdit();
+    mp_layername_line_edit = new QLineEdit();
+    mp_gdsnumber_line_edit = new QLineEdit();
+    mp_datatype_line_edit = new QLineEdit();
     mp_style_frame = new StyleFrame();
     mp_style_frame->setMaximumSize(200, 50);
     mp_style_frame->setFixedSize(200, 50);
 
     QGridLayout *gridLayout = new QGridLayout();
     gridLayout->addWidget(label1, 0, 0);
-    gridLayout->addWidget(mp_layername_lineedit, 0, 2);
+    gridLayout->addWidget(mp_layername_line_edit, 0, 2);
     gridLayout->addWidget(label2, 1, 0);
-    gridLayout->addWidget(mp_gdsnumber_lineedit, 1, 2);
+    gridLayout->addWidget(mp_gdsnumber_line_edit, 1, 2);
     gridLayout->addWidget(label3, 2, 0);
-    gridLayout->addWidget(mp_datatype_lineedit, 2, 2);
+    gridLayout->addWidget(mp_datatype_line_edit, 2, 2);
     gridLayout->addWidget(label4, 3, 0);
     gridLayout->addWidget(mp_style_frame, 3, 2);
 
@@ -380,12 +397,13 @@ void PdkManageDialog::SetupUi()
     mainLayout->addLayout(rightLayout);
 
     connect(mp_list_view, &QAbstractItemView::clicked, this, &PdkManageDialog::onListItemClicked);
-    connect(mp_layername_lineedit, &QLineEdit::editingFinished, this, &PdkManageDialog::onLayerNameFinished);
-    connect(mp_gdsnumber_lineedit, &QLineEdit::editingFinished, this, &PdkManageDialog::onGdsNumberNameFinished);
-    connect(mp_datatype_lineedit, &QLineEdit::editingFinished, this, &PdkManageDialog::onDataTypeFinished);
+    connect(mp_layername_line_edit, &QLineEdit::editingFinished, this, &PdkManageDialog::onLayerNameFinished);
+    connect(mp_gdsnumber_line_edit, &QLineEdit::editingFinished, this, &PdkManageDialog::onGdsNumberNameFinished);
+    connect(mp_datatype_line_edit, &QLineEdit::editingFinished, this, &PdkManageDialog::onDataTypeFinished);
     connect(mp_style_frame, &StyleFrame::dataChanged, this, &PdkManageDialog::onStyleFrameChanged);
     connect(saveButton, &QPushButton::clicked, this, &PdkManageDialog::onSaveStyleInfo);
     resize(480, 400);
+    setWindowIcon(QIcon(":/img/13.png"));
 }
 
 // void PdkManageDialog::closeEvent(QCloseEvent *event)

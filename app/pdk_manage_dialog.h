@@ -14,12 +14,12 @@
 #include "editableitemdelegate.h"
 #include "styleframe.h"
 
-class PdkManageDialog : public QDialog
+class PdkManageDialog final: public QDialog
 {
     Q_OBJECT
 public:
     explicit PdkManageDialog(QWidget *parent = nullptr);
-    ~PdkManageDialog();
+    ~PdkManageDialog(void) override;
 
 protected:
     // void closeEvent(QCloseEvent *event) override;
@@ -27,17 +27,17 @@ protected:
 private slots:
     // void accept();
     void onListItemClicked(const QModelIndex &index);
-    void onAddPushButtonClicked();
-    void onDelPushButtonClicked();
-    void onSaveStyleInfo();
+    void onAddPushButtonClicked(void);
+    void onDelPushButtonClicked(void);
+    void onSaveStyleInfo(void);
     void onStyleFrameChanged(const BorderStyle &style);
-    void onLayerNameFinished();
-    void onGdsNumberNameFinished();
-    void onDataTypeFinished();
+    void onLayerNameFinished(void);
+    void onGdsNumberNameFinished(void);
+    void onDataTypeFinished(void);
 private:
-    int ParseCfgFile(const QString &file);
-    int WriteCfgFile(const QString &filename);
-    void SetupUi();
+    int parseCfgFile(const QString &file);
+    int writeCfgFile(const QString &filename);
+    void setupUi();
 
 private:
     QList<PdkInfo> m_pdk_info_list;
@@ -46,9 +46,9 @@ private:
     // QTextEdit *m_contentTextEdit;
     // PdkItemModel *m_pdkItemModel;
     PdkListModel *mp_pdk_list_model;
-    QLineEdit *mp_layername_lineedit;
-    QLineEdit *mp_gdsnumber_lineedit;
-    QLineEdit *mp_datatype_lineedit;
+    QLineEdit *mp_layername_line_edit;
+    QLineEdit *mp_gdsnumber_line_edit;
+    QLineEdit *mp_datatype_line_edit;
     StyleFrame *mp_style_frame;
     QModelIndex m_custom_index;
 };

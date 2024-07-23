@@ -3,12 +3,13 @@
 
 #include <QAbstractListModel>
 
-class PdkListModel : public QAbstractListModel
+class PdkListModel final: public QAbstractListModel
 {
     Q_OBJECT
 public:
     explicit PdkListModel(QObject *parent = nullptr);
-    void SetData(const QStringList &data) {m_data = data;}
+    ~PdkListModel(void) override;
+    void setData(const QStringList &data);
 
     // QAbstractItemModel interface
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -20,7 +21,7 @@ public:
     // Add method to set data at specific index
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
     void removeItem(int row);
-    void addItem();
+    void addItem(void);
 
 private:
     QStringList m_data;

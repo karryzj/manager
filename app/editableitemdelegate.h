@@ -10,6 +10,7 @@ class EditableItemDelegate : public QStyledItemDelegate
 
 public:
     EditableItemDelegate(QObject *parent = nullptr);
+    ~EditableItemDelegate(void) override;
 
     // Override editing functions
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const override;

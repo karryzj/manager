@@ -10,12 +10,13 @@ class ColorLabel : public QLabel
     Q_OBJECT
 
 public:
-    ColorLabel(QWidget *parent = nullptr) : QLabel(parent) {
+    ColorLabel(QWidget *parent = nullptr) : QLabel(parent)
+    {
         setStyleSheet("border: 2px solid black; padding: 5px;");
     }
 
 protected:
-    virtual void mouseDoubleClickEvent(QMouseEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
 
 signals:
     void doubleClicked();

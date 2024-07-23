@@ -6,6 +6,11 @@ EditableItemDelegate::EditableItemDelegate(QObject *parent)
 {
 }
 
+EditableItemDelegate::~EditableItemDelegate()
+{
+
+}
+
 QWidget *EditableItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     QLineEdit *editor = new QLineEdit(parent);

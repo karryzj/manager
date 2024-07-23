@@ -6,16 +6,17 @@
 #include <QMenu>
 #include "pdk_info.h"
 
-class PdkItemModel : public QStandardItemModel
+class PdkItemModel final: public QStandardItemModel
 {
-
 public:
     PdkItemModel(int rows, int columns, QObject *parent = nullptr);
+    ~PdkItemModel(void) override;
+
+public:
     QMenu *getContextMenu(int row, int col) const;
 
 private:
     void createContextMenu(int row, int col);
-
 
 private:
     QMap<QPair<int, int>, QMenu *> m_context_menus;

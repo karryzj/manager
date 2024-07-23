@@ -7,7 +7,19 @@
 #include <QAction>
 #include "graphicsview.h"
 
-void GraphicsView::mouseMoveEvent(QMouseEvent *event) {
+GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
+    : QGraphicsView(scene, parent)
+{
+
+}
+
+GraphicsView::~GraphicsView()
+{
+
+}
+
+void GraphicsView::mouseMoveEvent(QMouseEvent *event)
+{
     QPoint pos = event->pos();
     // 将视图中的坐标转换为场景坐标
     QPointF scenePos = mapToScene(pos);
@@ -22,16 +34,18 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event) {
     //QGraphicsView::mouseMoveEvent(event);
 }
 
-void GraphicsView::contextMenuEvent(QContextMenuEvent *event) {
-     QMenu contextMenu(this);
-     QAction *popupAction = contextMenu.addAction("弹出悬浮窗");
+void GraphicsView::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu contextMenu(this);
+    QAction *popupAction = contextMenu.addAction("弹出悬浮窗");
 
-     connect(popupAction, &QAction::triggered, this, &GraphicsView::showPopupWindow);
+    connect(popupAction, &QAction::triggered, this, &GraphicsView::showPopupWindow);
 
-     contextMenu.exec(event->globalPos());
- }
+    contextMenu.exec(event->globalPos());
+}
 
-void GraphicsView::showPopupWindow() {
+void GraphicsView::showPopupWindow()
+{
     // 创建一个悬浮窗口
     QDialog *popup = new QDialog(this);
     popup->setWindowTitle("悬浮窗");

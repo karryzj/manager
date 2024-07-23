@@ -15,6 +15,11 @@ PdkItemModel::PdkItemModel(int rows, int columns, QObject *parent)
     }
 }
 
+PdkItemModel::~PdkItemModel()
+{
+
+}
+
 void PdkItemModel::createContextMenu(int row, int col)
 {
     QMenu *menu = new QMenu();
