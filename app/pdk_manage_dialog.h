@@ -38,6 +38,7 @@ private:
     int parseCfgFile(const QString &file);
     int writeCfgFile(const QString &filename);
     void setupUi();
+    void copyResourceToFileSystem(const QString &resourcePath, const QString &filePath);
 
 private:
     QList<PdkInfo> m_pdk_info_list;

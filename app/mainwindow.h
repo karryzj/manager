@@ -42,6 +42,7 @@ private slots:
 private:
     Ui::MainWindow *mp_ui;
     GraphicsView *mp_graphics_view;
+    QGraphicsScene *mp_graphics_scene;
     QLabel *mp_mouse_pos_label;
     RightDockWidget *mp_dockwidget_right;
     // QTimer *mp_auto_hide_timer;

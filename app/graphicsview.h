@@ -16,9 +16,13 @@ public:
 protected:
     void mouseMoveEvent(QMouseEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
 
 private:
     void showPopupWindow(void);
+
+private:
+    double m_scaleFactor;
 
 signals:
     void mouseMoved(const QPointF &message);

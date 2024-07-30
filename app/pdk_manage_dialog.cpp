@@ -11,6 +11,9 @@
 #include <QPushButton>
 #include <algorithm>
 #include <QGroupBox>
+#include <QDir>
+#include <QCoreApplication>
+#include <QMessageBox>
 #include "pdk_manage_dialog.h"
 #include "listitemwidget.h"
 
@@ -18,7 +21,13 @@ PdkManageDialog::PdkManageDialog(QWidget *parent)
     : QDialog(parent)
 {
     setWindowTitle("图层管理");
-    int ret = parseCfgFile("D:\\Work\\pdk_manager\\pdk.json");
+    QString appDirPath = QCoreApplication::applicationDirPath();
+    QString filePath = QDir(appDirPath).filePath("pdk.json");
+    if (!QFile::exists(filePath))
+    {
+        copyResourceToFileSystem(":/pdk.json", filePath);
+    }
+    int ret = parseCfgFile(filePath);
     Q_ASSERT(ret == 0);
 
     setupUi();
@@ -95,7 +104,9 @@ void PdkManageDialog::onDelPushButtonClicked()
 
 void PdkManageDialog::onSaveStyleInfo()
 {
-    writeCfgFile("D:\\Work\\pdk_manager\\pdk.json");
+    QString appDirPath = QCoreApplication::applicationDirPath();
+    QString filePath = QDir(appDirPath).filePath("pdk.json");
+    writeCfgFile(filePath);
 }
 
 void PdkManageDialog::onStyleFrameChanged(const BorderStyle &style)
@@ -270,7 +281,7 @@ int PdkManageDialog::writeCfgFile(const QString &filename)
     QJsonDocument doc(root_object);
 
     QFile file(filename);
-    if (!file.open(QIODevice::WriteOnly))
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         qWarning("Couldn't open save file.");
         return -1;
@@ -296,21 +307,21 @@ void PdkManageDialog::setupUi()
     mp_list_view->setModel(mp_pdk_list_model);
 
     // Set custom frames for each item
-    for (int row = 0; row < mp_pdk_list_model->rowCount(); ++row)
-    {
-        QModelIndex index = mp_pdk_list_model->index(row);
-        QString text = mp_pdk_list_model->data(index, Qt::DisplayRole).toString();
-        BorderStyle style;
-        auto it = std::find_if(m_pdk_info_list.begin(), m_pdk_info_list.end(), [&](const auto &pdk_info)
-        {
-            return pdk_info.layer_name == text;
-        });
-        if (it != m_pdk_info_list.end())
-        {
-            ListItemWidget *itemWidget = new ListItemWidget(it->style, text);
-            mp_list_view->setIndexWidget(index, itemWidget);
-        }
-    }
+    // for (int row = 0; row < mp_pdk_list_model->rowCount(); ++row)
+    // {
+    //     QModelIndex index = mp_pdk_list_model->index(row);
+    //     QString text = mp_pdk_list_model->data(index, Qt::DisplayRole).toString();
+    //     BorderStyle style;
+    //     auto it = std::find_if(m_pdk_info_list.begin(), m_pdk_info_list.end(), [&](const auto &pdk_info)
+    //     {
+    //         return pdk_info.layer_name == text;
+    //     });
+    //     if (it != m_pdk_info_list.end())
+    //     {
+    //         ListItemWidget *itemWidget = new ListItemWidget(it->style, text);
+    //         mp_list_view->setIndexWidget(index, itemWidget);
+    //     }
+    // }
 
     QHBoxLayout *leftBottomLayout = new QHBoxLayout();
     QPushButton *addPushButton = new QPushButton("添加");
@@ -406,14 +417,26 @@ void PdkManageDialog::setupUi()
     setWindowIcon(QIcon(":/img/13.png"));
 }
 
-// void PdkManageDialog::closeEvent(QCloseEvent *event)
-// {
-//     // 在Dialog关闭时执行的操作
-//     // int ret = WriteCfgFile("D:\\Work\\pdk_manager\\pdk_test.json");
+void PdkManageDialog::copyResourceToFileSystem(const QString &resourcePath, const QString &filePath)
+{
+    QFile resourceFile(resourcePath);
+    if (!resourceFile.open(QIODevice::ReadOnly))
+    {
+        QMessageBox::critical(nullptr, "Error", "Could not open resource file for reading");
+        return;
+    }
 
-//     // 调用基类的closeEvent处理函数，确保正常的Dialog关闭行为
-//     QDialog::closeEvent(event);
-// }
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        QMessageBox::critical(nullptr, "Error", "Could not open file for writing");
+        return;
+    }
+
+    file.write(resourceFile.readAll());
+    resourceFile.close();
+    file.close();
+}
 
 PdkManageDialog::~PdkManageDialog()
 {
@@ -421,9 +444,3 @@ PdkManageDialog::~PdkManageDialog()
     delete mp_pdk_list_model;
     // delete m_delegate;
 }
-
-// void PdkManageDialog::accept()
-// {
-//     // 处理确认按钮的逻辑
-//     QDialog::accept();
-// }

@@ -8,7 +8,7 @@
 #include "graphicsview.h"
 
 GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
-    : QGraphicsView(scene, parent)
+    : QGraphicsView(scene, parent), m_scaleFactor(1.15)
 {
 
 }
@@ -28,7 +28,8 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 
     // 右侧区域的阈值，比如右侧10%区域
     int rightAreaThreshold = width() * 0.1;
-    if (event->pos().x() < width() - rightAreaThreshold) {
+    if (event->pos().x() < width() - rightAreaThreshold)
+    {
         emit mouseLeaveRightArea();
     }
     //QGraphicsView::mouseMoveEvent(event);
@@ -59,4 +60,18 @@ void GraphicsView::showPopupWindow()
     // 设置悬浮窗为非模态
     popup->setWindowModality(Qt::NonModal);
     popup->show();
+}
+
+void GraphicsView::wheelEvent(QWheelEvent *event)
+{
+    if (event->delta() > 0)
+    {
+        // 放大
+        scale(m_scaleFactor, m_scaleFactor);
+    }
+    else
+    {
+        // 缩小
+        scale(1.0 / m_scaleFactor, 1.0 / m_scaleFactor);
+    }
 }
